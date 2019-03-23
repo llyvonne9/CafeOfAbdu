@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'dish.apps.DishConfig',
     'restaurant.apps.RestaurantConfig',
+    'serves.apps.ServesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
