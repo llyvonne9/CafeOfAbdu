@@ -2,6 +2,20 @@
 
 {% block content %}
 
-Home!
+{% for restaurant in restaurants.all %}
+<div class="row pt-2">
+  <div class="col-5">
+    <a href="{% url 'detail' restaurant.id %}"><h2>{{restaurant.name}}</h2></a>
+  </div>
+  <div class="col-7">
+    <a href="javascript:{document.getElementById('like{{restaurant.id}}').submit()}"><button class="btn btn-danger btn-lg">Like! {{restaurant.likes}}</button></a>
+  </div>
+</div>
+
+<form id="like{{restaurant.id}}" method="POST" action="{% url 'like' restaurant.id %}">
+  {% csrf_token %}
+  <input type="hidden">
+</form>
+{% endfor %}
 
 {% endblock %}
