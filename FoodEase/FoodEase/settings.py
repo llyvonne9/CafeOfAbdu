@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'foodeasedb',
         'USER': 'postgres',
-        'PASSWORD': 'vyomtej123',
+        'PASSWORD': 'wsll361WHXF',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -124,10 +124,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
+# put htmls
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR,'FoodEase/static/')
 ]
-
+#js, css
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'

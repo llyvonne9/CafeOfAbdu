@@ -19,6 +19,7 @@ from django.urls import path, include
 from restaurant import views
 
 urlpatterns = [
+    # 1st para: url link, 2nd para: location
     path('admin/', admin.site.urls),
     path('', views.home,name='home'),
     path('accounts/', include('accounts.urls')),
