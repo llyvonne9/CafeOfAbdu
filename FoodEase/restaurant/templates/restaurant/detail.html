@@ -2,17 +2,28 @@
 
 {% block content %}
 
-<div class="row">
+<div class="row pt-2">
   <div class="col-5">
     <a href="{{restaurant.url}}"><h2>{{restaurant.name}}</h2></a>
   </div>
 </div>
 
-<div class="row">
+<div class="row pt-2">
   <div class="col-5">
-    <a href="javascript:{document.getElementById('like').submit()}"><button class="btn btn-danger btn-lg"><span class="iconic iconic-heart" title="heart" aria-hidden="false"></span>Like! {{restaurant.likes}}</button></a>
+    <a href="javascript:{document.getElementById('like').submit()}"><button class="btn btn-danger btn-lg">Like! {{restaurant.likes}}</button></a>
   </div>
 </div>
+
+<div class="row pt-5">
+  <div class="col-9">
+    <a href="javascript:{document.getElementById('delete').submit()}"><button class="btn btn-dark btn-lg">Delete</button></a>
+  </div>
+</div>
+
+<form id="delete" method="POST" action="{% url 'delete' restaurant.id %}">
+  {% csrf_token %}
+  <input type="hidden">
+</form>
 
 <form id="like" method="POST" action="{% url 'like' restaurant.id %}">
   {% csrf_token %}

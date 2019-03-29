@@ -36,3 +36,13 @@ def like(request, restaurant_id):
         restaurant.likes += 1
         restaurant.save()
         return redirect('/restaurant/'+ str(restaurant.id))
+
+
+@login_required
+def delete(request, restaurant_id):
+    if (request.method == 'POST'):
+        restaurant = get_object_or_404(Restaurant, pk = restaurant_id)
+        restaurant.delete()
+        #return render(request, 'restaurant/home.html')
+        restaurants = Restaurant.objects
+        return render(request,'restaurant/home.html',{'restaurants':restaurants})
