@@ -46,3 +46,8 @@ def delete(request, restaurant_id):
         #return render(request, 'restaurant/home.html')
         restaurants = Restaurant.objects
         return render(request,'restaurant/home.html',{'restaurants':restaurants})
+
+def search(request):
+    query = request.GET['searchbar']
+    restaurants = Restaurant.objects.filter(name__icontains=query)
+    return render(request,'restaurant/search.html',{'restaurants':restaurants})
