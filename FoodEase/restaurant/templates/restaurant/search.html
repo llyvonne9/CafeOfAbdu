@@ -1,7 +1,11 @@
-You are in search
+{% extends 'base.html' %}
+
+{% block content %}
 
 {% for restaurant in restaurants.all %}
 
-<h1>{{restaurant.name}}</h1>
+<a href="{% url 'detail' restaurant.id %}"><h2>{{restaurant.name}}</h2></a>
 
 {% endfor %}
+
+{% endblock %}
