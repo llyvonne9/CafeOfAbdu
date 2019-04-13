@@ -6,7 +6,7 @@ from dish import models as dish_models
 
 class Serves(models.Model):
     restaurant_id = models.ForeignKey(restaurant_models.Restaurant, on_delete = models.CASCADE)
-    dish_id = models.ForeignKey(dish_models.Dish, on_delete = models.CASCADE)
+    dname = models.CharField(max_length=100,default="")
     ave_rating = models.FloatField(default=0.0)
     ave_wait = models.FloatField(default=0.0)
     is_speciality = models.BooleanField()
