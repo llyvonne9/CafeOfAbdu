@@ -3,19 +3,29 @@ from django.contrib.auth.decorators import login_required
 from .models import Restaurant
 from django.shortcuts import HttpResponseRedirect,Http404,HttpResponse,render_to_response,get_object_or_404,get_list_or_404
 from django.db import models, connection
+import json
+from django.core import serializers
+from django.http import JsonResponse
 # Create your views here.
 # def home(request):
 #     return render(request,'restaurant/home.html')
 def home(request):
-    res_name = 'Cravings'
+
     result = get_list_or_404(Restaurant)  
-    results = Restaurant.objects.raw('SELECT * FROM "restaurant_restaurant"')
-    return render(request, 'index.html', {'results': results})
+    # results = Restaurant.objects.raw('SELECT * FROM "restaurant_restaurant"')
+    # return render(request, 'index.html', {'results': results})
+    
+    res = Restaurant.objects.all()
+    results = serializers.serialize('json', res)
+
+    # print(results)
+    # print(type(results))
+    return render(request, 'index.html', {'results': res, 'r2' : results})
 
 @login_required
 def create(request):
     if (request.method == 'POST'):
-        if request.POST['rname'] and request.POST['cuisine'] and request.POST['location'] and request.POST['url'] and request.POST['phone']:
+        if request.POST['rname'] and request.POST['cuisine']  and request.POST['url'] and request.POST['phone']:
             # restaurant = Restaurant()
             # restaurant.name = request.POST['rname']
             # restaurant.cuisine = request.POST['cuisine']
@@ -24,18 +34,22 @@ def create(request):
             # restaurant.phone = request.POST['phone']
             # restaurant.save()
             c = connection.cursor()
-            c.execute("INSERT INTO restaurant_restaurant (name, cuisine, location, url, likes, phone) VALUES ( ' " 
+            c.execute("INSERT INTO restaurant_restaurant (name, cuisine, url, location, likes, lat, lng, phone) VALUES ( ' " 
                 + request.POST['rname'] + " ' , ' "  
                 + request.POST['cuisine'] + " ' , ' "
-                + request.POST['location'] + " ' , ' "
                 + request.POST['url'] + " ' , ' "
+                + ' ' + " ' , ' "
                 + str(1) + " ' , ' "
+                + str(request.POST['lat']) + " ' , ' "
+                + str(request.POST['lng']) + " ' , ' "
                 + request.POST['phone']  + " ' ) "
                 )
             results = Restaurant.objects.raw('SELECT id FROM "restaurant_restaurant"')
             print(results[:-1])
             connection.commit()
-            return redirect('/restaurant/'+ results[:-1])
+            # return redirect('/restaurant/'+ str(results[-1].id))
+            results = Restaurant.objects.raw('SELECT * FROM "restaurant_restaurant"')
+            return render(request, 'index.html', {'results': results})
         else:
             return render(request,'restaurant/create.html',{'error':'All fields required'})
     else:
@@ -72,5 +86,19 @@ def delete(request, restaurant_id):
         mydata = c.execute('DELETE FROM "restaurant_restaurant" WHERE id=' + str(restaurant_id))
         # conn.commit()
         # c.close
-        restaurants = Restaurant.objects
-        return render(request,'restaurant/home.html',{'restaurants':restaurants})
+        restaurants = Restaurant.objects.raw('SELECT * FROM "restaurant_restaurant"')
+        return render(request,'index.html',{'restaurants':restaurants})
+
+def search(request):
+    # query = request.GET['searchbar']
+    # restaurants = Restaurant.objects.filter(name__icontains=query)
+    c = connection.cursor()
+    # c.execute("SELECT * FROM restaurant_restaurant WHERE name LIKE '%" + request.GET['searchbar'] + "%'")
+    c.execute("SELECT * FROM restaurant_restaurant WHERE name LIKE %s OR cuisine LIKE %s OR location LIKE %s", ['%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%'])
+    restaurants = c.fetchall()
+    print(type(restaurants))
+    # restaurants = Restaurant.objects.raw("SELECT * FROM 'restaurant_restaurant' WHERE name LIKE '%" + request.GET['searchbar'] + "%'")
+    # restaurants = Restaurant.objects.raw("SELECT * FROM restaurant_restaurant WHERE name ='" + request.GET['searchbar'] + "'")
+
+    # print(len(restaurants))
+    return render(request,'restaurant/search.html',{'search_results':restaurants})

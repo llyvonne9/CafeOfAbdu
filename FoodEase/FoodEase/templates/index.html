@@ -1,5 +1,26 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="shortcut icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta name="theme-color" content="#000000"/><link rel="manifest" href="/manifest.json"/><link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"><style>.navbar-form .form-control{display:inline-block;width:80%;vertical-align:middle}.navbar-form{padding:0}</style><link href="/static/css/main.f9a22d28.chunk.css" rel="stylesheet"></head>
-<body><noscript>You need to enable JavaScript to run this app.</noscript>
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<link rel="shortcut icon" href="/favicon.ico"/>
+	<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta name="theme-color" content="#000000"/><link rel="manifest" href="/manifest.json"/>
+	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		.navbar-form .form-control{display:inline-block;width:70%;vertical-align:middle}
+		.navbar-form{padding:0}
+		#map{
+			overflow: visible;
+        	width: 300px;
+    		height: 300px;
+		}
+	</style>
+	<link href="/static/css/main.f9a22d28.chunk.css" rel="stylesheet">
+
+
+
+
+</head>
+<body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
@@ -12,39 +33,152 @@
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<form class="navbar-form navbar-right">
+					{% if request.session.user_login_name != None %}
+					<p style="color: white">Welcome, {{request.session.user_login_name}}!</p>
+			        <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a> 
+			        <a class="btn btn-primary" href="{% url 'create' %}">Create Resturant</a></form>
+					{% else %}
 					<select class="selectpicker"><option value="1">Resturant</option><option value="2">User</option></select> 
 					<a class="btn btn-primary" href="{% url 'signup' %}">Sign Up</a> 
 					<a class="btn btn-primary" href="{% url 'login' %}">Login</a>
-					<a class="btn btn-primary" href="{% url 'create' %}">Create Resturant</a></form>
+					
+					{% endif %}
+
 			</div>
 		</div>
 	</nav>
+	
+	
+	<div class="jumbotron">
+		<div class="container"><h1>Welcome to Foodease!</h1><p>Come here to find the best food ever.</p>
+		<!-- <div id="root"></div> -->
+		
+			<form action="search">
+		    	<input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchbar">
+		    	<button type="submit" value="Search" class = "btn btn-primary">Search</button>
+		  	</form>
 
-	<div class="jumbotron"><div class="container"><h1>Welcome to Foodease!</h1><p>Come here to find the best food ever.</p>
-						<div id="root"></div>
-					<form class="navbar-form"></form>
-				</div></div>
-
-<div class="container"><div>
-	<div style="float:left"><h3>Recommendations</h3></div>
-	<div style="float:right;padding-top:2%;vertical-align:middle">
-		<a class="btn btn-primary" href="{% url 'create' %}">Add a Resturant</a>
-		<p>{{select_res}}</p>
-	</div>
-</div>
-<div class="row" style="float:left">
-	{% for restaurant in results %}
-	<div class="col-md-4">
-		<a href="{% url 'detail' restaurant.id %}"><h2>{{restaurant.name}}</h2></a>
-		<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
-		<p>
-			<a href="javascript:{document.getElementById('like{{restaurant.id}}').submit()}"><button class="btn btn-default btn-lg">Like! {{restaurant.likes}}</button></a>
-		</p>
-	</div>
-	<form id="like{{restaurant.id}}" method="POST" action="{% url 'like' restaurant.id %}">
-  		{% csrf_token %} <input type="hidden">
-  	</form>{% endfor %}</div>
+			<div class="row">
+				
+				<div class="col-md-8">
+					{% for restaurant in results %}
+					<a href="{% url 'detail' restaurant.id %}"><h2>{{restaurant.name}}</h2></a>
+					<p>{{restaurant.id}}</p>
+					<p>Location: {{restaurant.location}}</p>
+					<p>URL: {{restaurant.url}}</p>
+					<p>Type: {{restaurant.cuisine}}</p>
+					<p>Phone: {{restaurant.phone}}</p>
+					<p>Lat: {{restaurant.lat}}, Lng: {{restaurant.lng}}</p>
+					<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. </p>
+					<p>
+						<a href="javascript:{document.getElementById('like{{restaurant.id}}').submit()}"><button class="btn btn-default btn-lg">Like! {{restaurant.likes}}</button></a>
+					</p>
+					<form id="like{{restaurant.id}}" method="POST" action="{% url 'like' restaurant.id %}">
+				  		{% csrf_token %} 
+				  		<input type="hidden">
+				  	</form>
+				  	{% endfor %}
+				</div>
+				<div class="col-md-4">
+				 	<div id = 'map'>
+				</div>
+			</div>
+			
+  		</div>
+ 
+  	
   </div>
-<script>!function(l){function e(e){for(var r,t,n=e[0],o=e[1],u=e[2],f=0,i=[];f<n.length;f++)t=n[f],p[t]&&i.push(p[t][0]),p[t]=0;for(r in o)Object.prototype.hasOwnProperty.call(o,r)&&(l[r]=o[r]);for(s&&s(e);i.length;)i.shift()();return c.push.apply(c,u||[]),a()}function a(){for(var e,r=0;r<c.length;r++){for(var t=c[r],n=!0,o=1;o<t.length;o++){var u=t[o];0!==p[u]&&(n=!1)}n&&(c.splice(r--,1),e=f(f.s=t[0]))}return e}var t={},p={1:0},c=[];function f(e){if(t[e])return t[e].exports;var r=t[e]={i:e,l:!1,exports:{}};return l[e].call(r.exports,r,r.exports,f),r.l=!0,r.exports}f.m=l,f.c=t,f.d=function(e,r,t){f.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},f.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},f.t=function(r,e){if(1&e&&(r=f(r)),8&e)return r;if(4&e&&"object"==typeof r&&r&&r.__esModule)return r;var t=Object.create(null);if(f.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:r}),2&e&&"string"!=typeof r)for(var n in r)f.d(t,n,function(e){return r[e]}.bind(null,n));return t},f.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return f.d(r,"a",r),r},f.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},f.p="/";var r=window.webpackJsonp=window.webpackJsonp||[],n=r.push.bind(r);r.push=e,r=r.slice();for(var o=0;o<r.length;o++)e(r[o]);var s=n;a()}([])</script><script src="/static/js/2.d57e0893.chunk.js"></script><script src="/static/js/main.183cef76.chunk.js"></script>
+  
+<!-- <script>!function(l){function e(e){for(var r,t,n=e[0],o=e[1],u=e[2],f=0,i=[];f<n.length;f++)t=n[f],p[t]&&i.push(p[t][0]),p[t]=0;for(r in o)Object.prototype.hasOwnProperty.call(o,r)&&(l[r]=o[r]);for(s&&s(e);i.length;)i.shift()();return c.push.apply(c,u||[]),a()}function a(){for(var e,r=0;r<c.length;r++){for(var t=c[r],n=!0,o=1;o<t.length;o++){var u=t[o];0!==p[u]&&(n=!1)}n&&(c.splice(r--,1),e=f(f.s=t[0]))}return e}var t={},p={1:0},c=[];function f(e){if(t[e])return t[e].exports;var r=t[e]={i:e,l:!1,exports:{}};return l[e].call(r.exports,r,r.exports,f),r.l=!0,r.exports}f.m=l,f.c=t,f.d=function(e,r,t){f.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},f.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},f.t=function(r,e){if(1&e&&(r=f(r)),8&e)return r;if(4&e&&"object"==typeof r&&r&&r.__esModule)return r;var t=Object.create(null);if(f.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:r}),2&e&&"string"!=typeof r)for(var n in r)f.d(t,n,function(e){return r[e]}.bind(null,n));return t},f.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return f.d(r,"a",r),r},f.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},f.p="/";var r=window.webpackJsonp=window.webpackJsonp||[],n=r.push.bind(r);r.push=e,r=r.slice();for(var o=0;o<r.length;o++)e(r[o]);var s=n;a()}([])</script><script src="/static/js/2.d57e0893.chunk.js"></script><script src="/static/js/main.183cef76.chunk.js"></script> -->
 </body>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8nr6pCFGJrJ2sfNgsb-g08XywFjZOKJg"></script>
+    <script>
+    var ids = []
+    var lats = []
+    var lngs = []
+    {% for restaurant in results %}
+    var id = {{ restaurant.id }}
+    var lat = {{ restaurant.lat }}
+    var lng = {{ restaurant.lng }}
+    ids.push(id)
+    lats.push(lat)
+    lngs.push(lng)
+    {% endfor %}
+	var label = 0;
+    // var locs_lats = [40.1164, 40.1164, 40.1164, 40.1164, 40.1164];
+    // var locs_lngs = [-88.2234, -88.2334, -88.2434, -88.2534, -88.2634];
+    var map;
+    var markersArray = [];
+    function initialize() {
+        var bangalore = { lat: 40.1164, lng: -88.2434 };
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 12,
+          center: bangalore
+        });
+
+        listMarkers(lats, lngs);
+        map.addListener("click", function (e) {
+
+          //lat and lng is available in e object
+            console.log(e.latLng.lat());
+            console.log(e.latLng.lng());
+
+        });
+      }
+      
+      function listMarkers(locs_lats, locs_lngs) {
+        for (var i = 0; i < ids.length; i++) {
+        	if(locs_lngs[i] === 0.0 || locs_lats[i] === 0.0) {
+        		// console.log(ids[i])
+        		continue;
+        	}
+        	console.log(i)
+          var marker = new google.maps.Marker({
+            id: i,
+            position: {
+              lat: locs_lats[i],
+              lng: locs_lngs[i]
+            },
+            label: String(i+1),
+            map: map
+          });
+          google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function(evt) {
+              // window.alert(i);
+              // restoreColors()
+              this.setIcon(pinSymbol('yellow'));
+
+            }
+          })(marker, i));
+          marker.addListener('click', changeColor);
+          markersArray.push(marker);        
+        }
+      }
+
+      function changeColor(evt) {
+        // restoreColors();
+        this.setIcon(pinSymbol('yellow'));
+      }
+
+      function pinSymbol(color) {
+        return {
+          path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z',
+          fillColor: color,
+          fillOpacity: 1,
+          // strokeColor: '#000',
+          strokeWeight: 2,
+          scale: 1
+        };
+      }
+
+      function restoreColors() {
+        for (var i = 0; i < markersArray.length; i++) {
+          markersArray[i].setIcon(pinSymbol(markersArray[i].originalColor));
+        }
+      }
+
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      
+    </script>
 </html>
