@@ -9,3 +9,8 @@ class Restaurant(models.Model):
     url = models.TextField()
     phone = models.CharField(max_length=50)
     likes = models.IntegerField(default=1)
+    is_veg = models.BooleanField(default=False)
+    is_dessert = models.BooleanField(default=False)
+    is_nightlife = models.BooleanField(default=False)
+    is_finedining = models.BooleanField(default=False)
+    is_cafe = models.BooleanField(default=False)

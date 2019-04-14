@@ -19,6 +19,16 @@ def create(request):
             restaurant.location = request.POST['location']
             restaurant.url = request.POST['url']
             restaurant.phone = request.POST['phone']
+            if 'veg' in request.POST:
+                restaurant.is_veg = True
+            if 'dessert' in request.POST:
+                restaurant.is_dessert = True
+            if 'night' in request.POST:
+                restaurant.is_nightlife = True
+            if 'cafe' in request.POST:
+                restaurant.is_cafe = True
+            if 'fine' in request.POST:
+                restaurant.is_finedining = True
             restaurant.save()
             return redirect('/restaurant/'+ str(restaurant.id))
         else:
