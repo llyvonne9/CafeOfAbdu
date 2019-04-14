@@ -72,3 +72,11 @@ def add_dish(request, restaurant_id):
             restaurant = get_object_or_404(Restaurant, pk = restaurant_id)
             restaurants = Restaurant.objects
             return render(request,'restaurant/home.html',{'restaurants':restaurants})
+
+@login_required
+def like_dish(request, restaurant_id, serve_id):
+    restaurant = get_object_or_404(Restaurant, pk = restaurant_id)
+    serve = get_object_or_404(serves_models.Serves, pk = serve_id)
+    serve.likes += 1
+    serve.save()
+    return redirect('/restaurant/'+ str(restaurant.id))

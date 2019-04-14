@@ -12,3 +12,4 @@ class Serves(models.Model):
     is_speciality = models.BooleanField()
     is_veg = models.BooleanField()
     price = models.FloatField()
+    likes = models.IntegerField(default=1)

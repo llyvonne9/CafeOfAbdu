@@ -46,12 +46,18 @@
     <h4>{{serve.price}}</h4>
   </div>
   <div class="col-2">
-    <a href=""><button class="btn btn-danger btn-lg">Like!</button></a>
+    <a href="javascript:{document.getElementById('like_dish{{serve.id}}').submit()}"><button class="btn btn-danger btn-lg">Like! {{serve.likes}}</button></a>
   </div>
 </div>
+
+<form id="like_dish{{serve.id}}" method="POST" action="{% url 'like_dish' restaurant.id serve.id %}">
+  {% csrf_token %}
+  <input type="hidden">
+</form>
 {% endfor%}
 <!-- <p>{{serves}}</p>
 <p>{{restaurants}}</p> -->
+
 
 <br />
 <h2>Add Dish!</h2>
