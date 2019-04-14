@@ -6,6 +6,8 @@ from django.db import models, connection
 import json
 from django.core import serializers
 from django.http import JsonResponse
+from dish import models as dish_models
+from serves import models as serves_models
 # Create your views here.
 # def home(request):
 #     return render(request,'restaurant/home.html')
@@ -58,7 +60,8 @@ def create(request):
 
 def detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, pk = restaurant_id)
-    return render(request, 'restaurant/detail.html',{'restaurant':restaurant})
+    serves = serves_models.Serves.objects.filter(restaurant_id=restaurant_id)
+    return render(request, 'restaurant/detail.html',context={'restaurant':restaurant,'serves':serves})
 
 @login_required
 def like(request, restaurant_id):
@@ -102,3 +105,31 @@ def search(request):
 
     # print(len(restaurants))
     return render(request,'restaurant/search.html',{'search_results':restaurants})
+
+
+@login_required
+def add_dish(request, restaurant_id):
+    if (request.method == 'POST'):
+        if request.POST['dname'] and request.POST['price']:
+            dish = dish_models.Dish()
+            dish.name = request.POST['dname']
+            dish.save()
+            serves = serves_models.Serves()
+            serves.dname = request.POST['dname']
+            serves.restaurant_id = Restaurant.objects.get(pk=restaurant_id)
+            serves.is_speciality = False
+            serves.is_veg = False
+            serves.price =  request.POST['price']
+            serves.save()
+            restaurant = get_object_or_404(Restaurant, pk = restaurant_id)
+            restaurants = Restaurant.objects
+            return render(request,'restaurant/home.html',{'restaurants':restaurants})
+
+
+@login_required
+def like_dish(request, restaurant_id, serve_id):
+    restaurant = get_object_or_404(Restaurant, pk = restaurant_id)
+    serve = get_object_or_404(serves_models.Serves, pk = serve_id)
+    serve.likes += 1
+    serve.save()
+    return redirect('/restaurant/'+ str(restaurant.id))

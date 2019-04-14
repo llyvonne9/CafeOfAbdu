@@ -33,4 +33,49 @@
   <input type="hidden">
 </form>
 
+<br />
+<h3>Menu</h3>
+<br />
+
+{% for serve in serves.all %}
+<div class="row pt-2">
+  <div class="col-2">
+    <a href=""><h4>{{serve.dname}}</h4></a>
+  </div>
+  <div class="col-2">
+    <h4>{{serve.price}}</h4>
+  </div>
+  <div class="col-2">
+    <!-- <a href=""><button class="btn btn-danger btn-lg">Like!</button></a> -->
+    <a href="javascript:{document.getElementById('like_dish{{serve.id}}').submit()}"><button class="btn btn-danger btn-lg">Like! {{serve.likes}}</button></a>
+
+    <form id="like_dish{{serve.id}}" method="POST" action="{% url 'like_dish' restaurant.id serve.id %}">
+      {% csrf_token %}
+      <input type="hidden">
+    </form>
+
+  </div>
+</div>
+{% endfor%}
+<!-- <p>{{serves}}</p>
+<p>{{restaurants}}</p> -->
+
+<br />
+<h2>Add Dish!</h2>
+
+<form method="POST" action="{% url 'add_dish' restaurant.id %}" enctype="multipart/form-data">
+{% csrf_token %}
+Name:
+<br />
+<input type="text" name="dname" />
+<br />
+Price:
+<br />
+<input type="number" name="price" />
+<br />
+
+<br />
+<input class="btn btn-warning" type="submit" value="Add Dish" />
+</form>
+
 {% endblock %}
