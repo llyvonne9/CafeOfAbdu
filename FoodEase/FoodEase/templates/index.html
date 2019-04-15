@@ -14,8 +14,15 @@
         	width: 300px;
     		height: 300px;
 		}
+		.form-check-label {
+			margin-right: 10px;
+		}
 	</style>
 	<link href="/static/css/main.f9a22d28.chunk.css" rel="stylesheet">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  	
+  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 
 
@@ -54,51 +61,144 @@
 		<div class="container"><h1>Welcome to Foodease!</h1><p>Come here to find the best food ever.</p>
 		<!-- <div id="root"></div> -->
 		
-			<form action="search">
+			<form action="search" class="range-field my-4 w-50">
 				<table>
 					<tr>
 					
 					</tr>
 				</table>
-		    	<input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchbar">
-		    	<button type="submit" value="Search" class = "btn btn-primary">Search</button>
-		  	</form>
+  				
+  				<div class="row">
+  					<div  class="col-md-4" style="padding-right: 0; width: 200px">
+  						<label for="amount">Price range:<input type="text" id="amount" readonly style="font-weight:bold; margin-right: 0; padding: 0; width: 100px"></label>
+  					</div>
+  					<div class="col-md-6">
+  						<div id="slider-range" type="range" style="padding-left: 0; padding-top: 5px "></div>
+  					</div>
+					
+  				</div>
+  				<div class="row">
+  					<div  class="col-md-4" style="padding-right: 0; width: 200px">
+  						<label for="amount">Categorize:</label>
+  					</div>
+  					<div class="form-check form-check-inline col-md-8">
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" name="veg">
+					  <label class="form-check-label" for="inlineCheckbox1">Vegetarian Friendly</label>
 
-			<div class="row">
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2" name="dessert">
+					  <label class="form-check-label" for="inlineCheckbox2">Dessert Shop</label>
+
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" name="night">
+					  <label class="form-check-label" for="inlineCheckbox2">Night Life</label>
+
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="option4" name="fine" >
+					  <label class="form-check-label" for="inlineCheckbox2">Fine Dining</label>
+
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="option5" name="cafe" >
+					  <label class="form-check-label" for="inlineCheckbox2">Cafe</label>
+					</div>
+  				</div>
+  				<div class="row">
+  					<div  class="col-md-4" style="padding-right: 0; width: 200px">
+  						<label for="amount">Distance:</label>
+  					</div>
+  					<div class="form-check form-check-inline col-md-8">
+					  <input class="form-check-input" type="radio" id="dis1" value="option1" name="distance">
+					  <label class="form-check-label" for="inlineCheckbox1">Within 1km</label>
+
+					  <input class="form-check-input" type="radio" id="dis3" value="option2" name="distance">
+					  <label class="form-check-label" for="inlineCheckbox2">Within 3km</label>
+
+					  <input class="form-check-input" type="radio" id="dis5" value="option3" name="distance">
+					  <label class="form-check-label" for="inlineCheckbox2">Within 5km</label>
+					</div>
+  				</div>
+  				<div class="row">
+  					<div  class="col-md-4" style="padding-right: 0; width: 200px">
+  						<label for="amount">Total likes:</label>
+  					</div>
+  					<div class="form-check form-check-inline col-md-8">
+					  <input class="form-check-input" type="radio" id="dis1" value="option1" name="likes_number">
+					  <label class="form-check-label" for="inlineCheckbox1">More than 50</label>
+
+					  <input class="form-check-input" type="radio" id="dis3" value="option2" name="likes_number">
+					  <label class="form-check-label" for="inlineCheckbox2">More than 100</label>
+
+					  <input class="form-check-input" type="radio" id="dis5" value="option3" name="likes_number">
+					  <label class="form-check-label" for="inlineCheckbox2">More than 150</label>
+					</div>
+  				</div>
+  				<div class="row">
+  					<div  class="col-md-8">
+  						<input class="form-control mr-sm-2 col-md-8"  type="search" placeholder="Search" name="searchbar">
+  					</div>
+  					<div  class="col-md-4">
+  						<button type="submit" value="Search" class = "btn btn-primary">Search</button>
+  					</div>
+		    		
+					
+  				</div>
+				  	
+  				
+
+
+		    	
+		    	<!-- Price range:
+		    	Distance: list
+		    	Likes range
+		    	Categori checlbox -->
+		  	</form>
+		</div>
+  	
+  </div>
+  	<div class="container" >
+		<div class="row">
 				
-				<div class="col-md-8">
-					{% for restaurant in results %}
-					<a href="{% url 'detail' restaurant.id %}"><h2>{{restaurant.name}}</h2></a>
-					<p>{{restaurant.id}}</p>
-					<p>Location: {{restaurant.location}}</p>
-					<p>URL: {{restaurant.url}}</p>
-					<p>Type: {{restaurant.cuisine}}</p>
-					<p>Phone: {{restaurant.phone}}</p>
-					<p>Lat: {{restaurant.lat}}, Lng: {{restaurant.lng}}</p>
-					<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. </p>
-					<p>
-						<a href="javascript:{document.getElementById('like{{restaurant.id}}').submit()}"><button class="btn btn-default btn-lg">Like! {{restaurant.likes}}</button></a>
-					</p>
-					<form id="like{{restaurant.id}}" method="GET" action="{% url 'like' restaurant.id %}">
-				  		{% csrf_token %} 
-				  		<input type="hidden">
-				  	</form>
-				  	{% endfor %}
-				</div>
-				<div class="col-md-4">
-				 	<div id = 'map'>
-				</div>
+			<div class="col-md-8">
+				{% for restaurant in results %}
+				<a href="{% url 'detail' restaurant.id %}"><h2>{{restaurant.name}}</h2></a>
+				<p>{{restaurant.id}}</p>
+				<p>Location: {{restaurant.location}}</p>
+				<p>URL: {{restaurant.url}}</p>
+				<p>Type: {{restaurant.cuisine}}</p>
+				<p>Phone: {{restaurant.phone}}</p>
+				<p>Lat: {{restaurant.lat}}, Lng: {{restaurant.lng}}</p>
+				<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. </p>
+				<p>
+					<a href="javascript:{document.getElementById('like{{restaurant.id}}').submit()}"><button class="btn btn-default btn-lg">Like! {{restaurant.likes}}</button></a>
+				</p>
+				<form id="like{{restaurant.id}}" method="GET" action="{% url 'like' restaurant.id %}">
+				  	{% csrf_token %} 
+				  	<input type="hidden">
+				  </form>
+				  {% endfor %}
+			</div>
+			<div class="col-md-4">
+				 <div id = 'map'></div>
 			</div>
 			
   		</div>
- 
-  	
-  </div>
+  	</div>
   
 <!-- <script>!function(l){function e(e){for(var r,t,n=e[0],o=e[1],u=e[2],f=0,i=[];f<n.length;f++)t=n[f],p[t]&&i.push(p[t][0]),p[t]=0;for(r in o)Object.prototype.hasOwnProperty.call(o,r)&&(l[r]=o[r]);for(s&&s(e);i.length;)i.shift()();return c.push.apply(c,u||[]),a()}function a(){for(var e,r=0;r<c.length;r++){for(var t=c[r],n=!0,o=1;o<t.length;o++){var u=t[o];0!==p[u]&&(n=!1)}n&&(c.splice(r--,1),e=f(f.s=t[0]))}return e}var t={},p={1:0},c=[];function f(e){if(t[e])return t[e].exports;var r=t[e]={i:e,l:!1,exports:{}};return l[e].call(r.exports,r,r.exports,f),r.l=!0,r.exports}f.m=l,f.c=t,f.d=function(e,r,t){f.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},f.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},f.t=function(r,e){if(1&e&&(r=f(r)),8&e)return r;if(4&e&&"object"==typeof r&&r&&r.__esModule)return r;var t=Object.create(null);if(f.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:r}),2&e&&"string"!=typeof r)for(var n in r)f.d(t,n,function(e){return r[e]}.bind(null,n));return t},f.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return f.d(r,"a",r),r},f.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},f.p="/";var r=window.webpackJsonp=window.webpackJsonp||[],n=r.push.bind(r);r.push=e,r=r.slice();for(var o=0;o<r.length;o++)e(r[o]);var s=n;a()}([])</script><script src="/static/js/2.d57e0893.chunk.js"></script><script src="/static/js/main.183cef76.chunk.js"></script> -->
 </body>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8nr6pCFGJrJ2sfNgsb-g08XywFjZOKJg"></script>
     <script>
+
+    $( function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 0,
+      max: 100,
+      values: [ 5, 50 ],
+      slide: function( event, ui ) {
+        $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+      }
+    });
+    $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+      " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+  	} );
+
     var ids = []
     var lats = []
     var lngs = []
