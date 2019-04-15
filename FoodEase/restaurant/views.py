@@ -65,7 +65,7 @@ def detail(request, restaurant_id):
 
 @login_required
 def like(request, restaurant_id):
-    if (request.method == 'POST'):
+    if (request.method == 'GET'):
         # restaurant = get_object_or_404(Restaurant, pk = restaurant_id)
         # restaurant.likes = restaurant.likes + 1
         # restaurant.save()

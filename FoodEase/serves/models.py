@@ -14,3 +14,8 @@ class Serves(models.Model):
     price = models.FloatField()
     likes = models.IntegerField(default=1)
     
+
+
+# search a resturant, the most popular dishes(with most likes)
+# the most popular resturant
+# 
