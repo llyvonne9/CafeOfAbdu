@@ -11,4 +11,5 @@ class Restaurant(models.Model):
 	likes = models.IntegerField(default=1)
 	lat = models.FloatField(default=0.0)
 	lng = models.FloatField(default=0.0)
+	photo = models.ImageField(upload_to='imgs')
 

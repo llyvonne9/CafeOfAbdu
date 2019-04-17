@@ -28,24 +28,32 @@ def home(request):
 def create(request):
     if (request.method == 'POST'):
         if request.POST['rname'] and request.POST['cuisine']  and request.POST['url'] and request.POST['phone']:
-            # restaurant = Restaurant()
-            # restaurant.name = request.POST['rname']
-            # restaurant.cuisine = request.POST['cuisine']
-            # restaurant.location = request.POST['location']
-            # restaurant.url = request.POST['url']
-            # restaurant.phone = request.POST['phone']
-            # restaurant.save()
-            c = connection.cursor()
-            c.execute("INSERT INTO restaurant_restaurant (name, cuisine, url, location, likes, lat, lng, phone) VALUES ( ' " 
-                + request.POST['rname'] + " ' , ' "  
-                + request.POST['cuisine'] + " ' , ' "
-                + request.POST['url'] + " ' , ' "
-                + ' ' + " ' , ' "
-                + str(1) + " ' , ' "
-                + str(request.POST['lat']) + " ' , ' "
-                + str(request.POST['lng']) + " ' , ' "
-                + request.POST['phone']  + " ' ) "
-                )
+            restaurant = Restaurant()
+            restaurant.name = request.POST['rname']
+            restaurant.cuisine = request.POST['cuisine']
+            restaurant.location = "location"
+            restaurant.likes = 1
+            restaurant.url = request.POST['url']
+            restaurant.lat = request.POST['lat']
+            restaurant.lng = request.POST['lng']
+            restaurant.phone = request.POST['phone']
+            photo = request.FILES.get('img')
+            restaurant.photo = photo
+            restaurant.save()
+            # print()
+            
+            # c = connection.cursor()
+            # c.execute("INSERT INTO restaurant_restaurant (name, cuisine, url, location, likes, lat, lng, photo, phone) VALUES ( ' " 
+            #     + request.POST['rname'] + " ' , ' "  
+            #     + request.POST['cuisine'] + " ' , ' "
+            #     + request.POST['url'] + " ' , ' "
+            #     + ' ' + " ' , ' "
+            #     + str(1) + " ' , ' "
+            #     + str(request.POST['lat']) + " ' , ' "
+            #     + str(request.POST['lng']) + " ' , ' "
+            #     + request.FILES.get('img') + " ' , ' "
+            #     + request.POST['phone']  + " ' ) "
+            #     )
             results = Restaurant.objects.raw('SELECT id FROM "restaurant_restaurant"')
             print(results[:-1])
             connection.commit()
@@ -123,7 +131,7 @@ def add_dish(request, restaurant_id):
             serves.save()
             restaurant = get_object_or_404(Restaurant, pk = restaurant_id)
             restaurants = Restaurant.objects
-            return render(request,'restaurant/home.html',{'restaurants':restaurants})
+            return redirect('/restaurant/'+ str(restaurant_id))
 
 
 @login_required
@@ -133,3 +141,8 @@ def like_dish(request, restaurant_id, serve_id):
     serve.likes += 1
     serve.save()
     return redirect('/restaurant/'+ str(restaurant.id))
+
+@login_required
+def statistics(request):
+    if (request.method == 'GET'):
+        return render(request,'restaurant/statistics.html')
