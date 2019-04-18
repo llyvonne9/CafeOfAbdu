@@ -12,8 +12,8 @@
 		.navbar-form{padding:0}
 		#map{
 			overflow: visible;
-        	width: 300px;
-    		height: 300px;
+        	width: 400px;
+    		height: 400px;
 		}
 		.form-check-label {
 			margin-right: 10px;
@@ -60,7 +60,7 @@
 			<div id="navbar" class="navbar-collapse collapse">
 				<form class="navbar-form navbar-right">
 					{% if request.session.user_login_name != None %}
-					<p style="color: white">Welcome, {{request.session.user_login_name}}!</p>
+					   <div style="color: white">Welcome, {{request.session.user_login_name}}!</div>
 			        <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a> 
 			        <a class="btn btn-primary" href="{% url 'statistics' %}">Statistics</a> 
 			        <a class="btn btn-primary" href="{% url 'create' %}">Create Resturant</a></form>
@@ -149,6 +149,14 @@
   					</div>
   					<div  class="col-md-4">
   						<button type="submit" value="Search" class = "btn btn-primary">Search</button>
+              <div class="form-check form-check-inline col-md-8"> by
+                <input class="form-check-input" type="radio" id="dis1" value="restaurant" name="searchby">
+                <label class="form-check-label" for="inlineCheckbox1">restaurant</label>
+
+                <input class="form-check-input" type="radio" id="dis3" value="dish" name="searchby">
+                <label class="form-check-label" for="inlineCheckbox2">dish</label>
+              </div>
+              </div>
   					</div>
 		    		
 					
@@ -161,7 +169,7 @@
   </div>
   	<div class="container" >
 <!--     <div class="row"> -->
-      <div class="col-md-8">
+      <div class="col-md-7">
             {% for restaurant in results %}
             <div class="card" style="width: 40rem;">
                 <img class="card-img-top img-responsive" src="{{ MEDIA_URL }}{{ restaurant.photo }}">
@@ -185,7 +193,7 @@
             </div>
             {% endfor %}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
          <div id = 'map'></div>
       </div>
       <!-- </div> -->
@@ -241,7 +249,7 @@
       range: true,
       min: 0,
       max: 100,
-      values: [ 5, 50 ],
+      values: [ 0, 50 ],
       slide: function( event, ui ) {
         $( "#amount_min" ).val(ui.values[ 0 ]);
         $( "#amount_max" ).val(ui.values[ 1 ]);

@@ -27,7 +27,8 @@ def home(request):
 @login_required
 def create(request):
     if (request.method == 'POST'):
-        if request.POST['rname'] and request.POST['cuisine']  and request.POST['url'] and request.POST['phone']:
+        # if request.POST['rname'] and request.POST['cuisine']  and request.POST['url'] and request.POST['phone']:
+        if 1:
 
             restaurant = Restaurant()
             restaurant.name = request.POST['rname']
@@ -38,8 +39,8 @@ def create(request):
             restaurant.lat = request.POST['lat']
             restaurant.lng = request.POST['lng']
             restaurant.phone = request.POST['phone']
-            photo = request.FILES.get('img')
-            restaurant.photo = photo
+            if request.FILES.get('img') is not None:
+                restaurant.photo = request.FILES.get('img')
             restaurant.is_veg = True if request.POST.get('vegc') is not None else False
             restaurant.is_nightlife = True if request.POST.get('nightc') is not None else False
             restaurant.is_finedining = True if request.POST.get('finec') is not None else False
@@ -109,7 +110,7 @@ def delete(request, restaurant_id):
 
 @login_required
 def search(request):
-    query = request.GET['searchbar']
+    query = request.GET['searchbar'].lower()
     min = request.GET['amount_min']
     max = request.GET['amount_max']
     likes = request.GET.get('likes_number')
@@ -153,26 +154,54 @@ def search(request):
     if isCafe:
         category_query +=  " AND bool_or(is_cafe) = TRUE"
 
-    
-    c = connection.cursor()
-    c.execute(
-        "SELECT r.name FROM restaurant_restaurant AS r \
-        LEFT JOIN serves_serves AS s ON r.id = s.restaurant_id_id \
-        WHERE r.name LIKE %s OR r.cuisine LIKE %s OR r.location LIKE %s OR s.dname LIKE %s\
-        GROUP BY r.name HAVING MIN(s.price) >= " + min + " AND MAX(s.price) <= "+ max +" \
-        AND SUM(s.likes) >= " + str(likes) + " \
-        " + category_query
-        , ['%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%'])
-    restaurants = c.fetchall()
-    # restaurants.filter()
-    print("restaurant", restaurants)
-    print("type", type(restaurants))
-    # restaurants = Restaurant.objects.raw("SELECT * FROM 'restaurant_restaurant' WHERE name LIKE '%" + request.GET['searchbar'] + "%'")
-    # restaurants = Restaurant.objects.raw("SELECT * FROM restaurant_restaurant WHERE name ='" + request.GET['searchbar'] + "'")
+    if request.GET.get('searchby') is None or  request.GET.get('searchby') == "restaurant":
 
-    # print(len(restaurants))
-    # restaurants = Restaurant.objects.filter(name__icontains=query)
-    return render(request,'restaurant/search.html',{'search_results':restaurants})
+        #search resturant
+        c = connection.cursor()
+        c.execute(
+            "SELECT r.name FROM restaurant_restaurant AS r \
+            LEFT JOIN serves_serves AS s ON r.id = s.restaurant_id_id \
+            WHERE LOWER(r.name) LIKE LOWER(%s) OR r.cuisine LIKE %s OR r.location LIKE %s OR LOWER(s.dname) LIKE %s \
+            GROUP BY r.name HAVING MIN(s.price) >= " + min + " AND MAX(s.price) <= "+ max +" \
+            AND SUM(s.likes) >= " + str(likes) + " \
+            " + category_query
+            , ['%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%'])
+        restaurants = c.fetchall()
+        # restaurants.filter()
+        print("restaurant", restaurants)
+        print("type", type(restaurants))
+        ids = []
+        for r in restaurants:
+            id = Restaurant.objects.filter(name=r[0])
+            ids.append(id)
+            print("id", id)
+        return render(request,'restaurant/search.html',{'search_results':restaurants, 'ids': ids})
+        
+    else:
+       # seearch dises
+        c_dish = connection.cursor()
+        c_dish.execute(
+            "SELECT s.dname, r.id FROM restaurant_restaurant AS r \
+            LEFT JOIN serves_serves AS s ON r.id = s.restaurant_id_id \
+            WHERE LOWER(s.dname) LIKE LOWER(%s)\
+            AND s.price >= " + min + " AND s.price <= "+ max +" \
+            AND s.likes >= " + str(likes) + " \
+            " + category_query
+            , ['%'+request.GET['searchbar']+'%'])
+        dishes = c_dish.fetchall()
+        result = []
+        for dish in dishes:
+            d = {}
+            d['name'] = dish[0]
+            d['id'] = dish[1]
+            result.append(d)
+        # ids = []
+        # for r in restaurants:
+        #     id = Restaurant.objects.filter(name=r[0])
+        #     ids.append(id)
+        #     print("id", id)
+
+        return render(request,'restaurant/search.html',{'dishes': result})
 
 
 @login_required

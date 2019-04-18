@@ -64,21 +64,26 @@
       </div>
     </nav>
     <div>
+        
+        
     	You are in search
-        {{search_results}}
+        
+        {% for id in ids %}
 
-<!-- 		{% for restaurant in search_results %}
-        {% for att in restaurant %}{% if forloop.counter == 2 %}
-		<h1>{{att}}{% if forloop.counter == 1 %}{% endif %}</h1>
-        {% endif %}
-        {% endfor %}
-		{% endfor %} -->
+        {% for i in id %}
 
-        {% for restaurant in search_results %}
-
-        <h1>{{restaurant}}</h1>
+        
+        <a href="{% url 'detail' i.id %}"><h1>{{i.name}}</h1></a>
 
         {% endfor %}
+
+        {% endfor %}
+
+        {% for dish in dishes %}
+            <a href="{% url 'detail' dish.id %}"><h1>{{dish.name}}</h1></a>
+        {% endfor%}
+        
+
     </div>
 
 
