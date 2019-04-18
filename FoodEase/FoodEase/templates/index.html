@@ -81,15 +81,11 @@
 		<!-- <div id="root"></div> -->
 		
 			<form action="search" class="range-field my-4 w-50">
-				<table>
-					<tr>
-					
-					</tr>
-				</table>
+
   				
   				<div class="row">
   					<div  class="col-md-4" style="padding-right: 0; width: 200px">
-  						<label for="amount">Price range:<input type="text" id="amount" readonly style="font-weight:bold; margin-right: 0; padding: 0; width: 100px"></label>
+  						<label for="amount">Price range:<input type="text" id="amount_min" name = "amount_min"readonly style="font-weight:bold; margin-right: 0; padding: 0; width: 40px"> - <input type="text" id="amount_max" name="amount_max"readonly style="font-weight:bold; margin-right: 0; padding: 0; width: 40px"></label>
   					</div>
   					<div class="col-md-6">
   						<div id="slider-range" type="range" style="padding-left: 0; padding-top: 5px "></div>
@@ -98,22 +94,22 @@
   				</div>
   				<div class="row">
   					<div  class="col-md-4" style="padding-right: 0; width: 200px">
-  						<label for="amount">Categorize:</label>
+  						<label>Categorize:</label>
   					</div>
   					<div class="form-check form-check-inline col-md-8">
-					  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" name="veg">
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="veg" name="veg">
 					  <label class="form-check-label" for="inlineCheckbox1">Vegetarian Friendly</label>
 
-					  <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2" name="dessert">
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="dessert" name="dessert">
 					  <label class="form-check-label" for="inlineCheckbox2">Dessert Shop</label>
 
-					  <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" name="night">
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="night" name="night">
 					  <label class="form-check-label" for="inlineCheckbox2">Night Life</label>
 
-					  <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="option4" name="fine" >
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="fine" name="fine" >
 					  <label class="form-check-label" for="inlineCheckbox2">Fine Dining</label>
 
-					  <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="option5" name="cafe" >
+					  <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="cafe" name="cafe" >
 					  <label class="form-check-label" for="inlineCheckbox2">Cafe</label>
 					</div>
   				</div>
@@ -157,16 +153,9 @@
 		    		
 					
   				</div>
-				  	
-  				
 
-
-		    	
-		    	<!-- Price range:
-		    	Distance: list
-		    	Likes range
-		    	Categori checlbox -->
 		  	</form>
+
 		</div>
   	
   </div>
@@ -233,7 +222,7 @@
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8nr6pCFGJrJ2sfNgsb-g08XywFjZOKJg"></script>
     <script>
 
-    $( function() {
+    /*$( function() {
     $( "#slider-range" ).slider({
       range: true,
       min: 0,
@@ -246,6 +235,23 @@
     $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
       " - $" + $( "#slider-range" ).slider( "values", 1 ) );
   	} );
+    */
+    $( function() {
+    $( "#slider-range" ).slider({
+      range: true,
+      min: 0,
+      max: 100,
+      values: [ 5, 50 ],
+      slide: function( event, ui ) {
+        $( "#amount_min" ).val(ui.values[ 0 ]);
+        $( "#amount_max" ).val(ui.values[ 1 ]);
+      }
+    });
+    $( "#amount_min" ).val( $( "#slider-range" ).slider( "values", 0 ) );
+    $( "#amount_max" ).val( $( "#slider-range" ).slider( "values", 1 ) );
+    } );
+    
+
 
     var ids = []
     var lats = []

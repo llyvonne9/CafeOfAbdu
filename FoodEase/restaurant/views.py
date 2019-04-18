@@ -100,15 +100,34 @@ def delete(request, restaurant_id):
         restaurants = Restaurant.objects.raw('SELECT * FROM "restaurant_restaurant"')
         return render(request,'index.html',{'restaurants':restaurants})
 
+
+@login_required
 def search(request):
-    # query = request.GET['searchbar']
-    # restaurants = Restaurant.objects.filter(name__icontains=query)
+    query = request.GET['searchbar']
+    min = request.GET['amount_min']
+    max = request.GET['amount_max']
+    likes = request.GET['likes_number']
+    if likes == "option1":
+        print("larger than 50")
+    elif likes == "option2":
+        print("larger than 100")
+    else:
+        print("larger than 150")
+        
+    isVeg = True if request.GET.get('veg') is not None else False
+    isNight = True if request.GET.get('night') is not None else False
+    isFine = True if request.GET.get('fine') is not None else False
+    isDessert = True if request.GET.get('dessert') is not None else False
+    isCafe = True if request.GET.get('cafe') is not None else False
+    
+
+
+    restaurants = Restaurant.objects.filter(name__icontains=query)
     c = connection.cursor()
-    # c.execute("SELECT * FROM restaurant_restaurant WHERE name LIKE '%" + request.GET['searchbar'] + "%'")
     c.execute("SELECT * FROM restaurant_restaurant WHERE name LIKE %s OR cuisine LIKE %s OR location LIKE %s", ['%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%'])
     restaurants = c.fetchall()
-    print(type(restaurants))
-    # restaurants = Restaurant.objects.raw("SELECT * FROM 'restaurant_restaurant' WHERE name LIKE '%" + request.GET['searchbar'] + "%'")
+    print("type", type(restaurants))
+    restaurants = Restaurant.objects.raw("SELECT * FROM 'restaurant_restaurant' WHERE name LIKE '%" + request.GET['searchbar'] + "%'")
     # restaurants = Restaurant.objects.raw("SELECT * FROM restaurant_restaurant WHERE name ='" + request.GET['searchbar'] + "'")
 
     # print(len(restaurants))
