@@ -28,6 +28,7 @@ def home(request):
 def create(request):
     if (request.method == 'POST'):
         if request.POST['rname'] and request.POST['cuisine']  and request.POST['url'] and request.POST['phone']:
+
             restaurant = Restaurant()
             restaurant.name = request.POST['rname']
             restaurant.cuisine = request.POST['cuisine']
@@ -39,6 +40,11 @@ def create(request):
             restaurant.phone = request.POST['phone']
             photo = request.FILES.get('img')
             restaurant.photo = photo
+            restaurant.is_veg = True if request.POST.get('vegc') is not None else False
+            restaurant.is_nightlife = True if request.POST.get('nightc') is not None else False
+            restaurant.is_finedining = True if request.POST.get('finec') is not None else False
+            restaurant.is_dessert = True if request.POST.get('dessertc') is not None else False
+            restaurant.is_cafe = True if request.POST.get('cafec') is not None else False
             restaurant.save()
             # print()
             
@@ -106,31 +112,66 @@ def search(request):
     query = request.GET['searchbar']
     min = request.GET['amount_min']
     max = request.GET['amount_max']
-    likes = request.GET['likes_number']
+    likes = request.GET.get('likes_number')
     if likes == "option1":
         print("larger than 50")
+        likes = 50
     elif likes == "option2":
+        likes = 100
         print("larger than 100")
-    else:
+    elif likes == "option3":
+        likes = 150
         print("larger than 150")
-        
+    else:
+        likes = 0
+        print("likes is not limited")
+
     isVeg = True if request.GET.get('veg') is not None else False
     isNight = True if request.GET.get('night') is not None else False
     isFine = True if request.GET.get('fine') is not None else False
     isDessert = True if request.GET.get('dessert') is not None else False
     isCafe = True if request.GET.get('cafe') is not None else False
+
+    # query = request.GET['searchbar']
+    # q1 = query.split(':')
+    # name = q1[0]
+    # dPrice = q1[1]
+    # min = int(float(dPrice )) - 3
+    # max = int(float(dPrice ))+ 3
+    # serve = serves_models.Serves.objects.filter(dname=name,price__range=(min,max)).values_list('restaurant_id_id', flat=True)
+    # restaurants = Restaurant.objects.filter(pk__in=serve)
+    # return render(request,'restaurant/search.html',{'restaurants':restaurants})
+    category_query = ""
+    if isVeg:
+        category_query += " AND bool_or(r.is_veg) = TRUE"
+    if isDessert:
+        category_query +=  " AND bool_or(is_dessert) = TRUE"
+    if isFine:
+        category_query +=  " AND bool_or(is_finedining) = TRUE"
+    if isNight:
+        category_query +=  " AND bool_or(is_nightlife) = TRUE"
+    if isCafe:
+        category_query +=  " AND bool_or(is_cafe) = TRUE"
+
     
-
-
-    restaurants = Restaurant.objects.filter(name__icontains=query)
     c = connection.cursor()
-    c.execute("SELECT * FROM restaurant_restaurant WHERE name LIKE %s OR cuisine LIKE %s OR location LIKE %s", ['%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%'])
+    c.execute(
+        "SELECT r.name FROM restaurant_restaurant AS r \
+        LEFT JOIN serves_serves AS s ON r.id = s.restaurant_id_id \
+        WHERE r.name LIKE %s OR r.cuisine LIKE %s OR r.location LIKE %s OR s.dname LIKE %s\
+        GROUP BY r.name HAVING MIN(s.price) >= " + min + " AND MAX(s.price) <= "+ max +" \
+        AND SUM(s.likes) >= " + str(likes) + " \
+        " + category_query
+        , ['%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%'])
     restaurants = c.fetchall()
+    # restaurants.filter()
+    print("restaurant", restaurants)
     print("type", type(restaurants))
-    restaurants = Restaurant.objects.raw("SELECT * FROM 'restaurant_restaurant' WHERE name LIKE '%" + request.GET['searchbar'] + "%'")
+    # restaurants = Restaurant.objects.raw("SELECT * FROM 'restaurant_restaurant' WHERE name LIKE '%" + request.GET['searchbar'] + "%'")
     # restaurants = Restaurant.objects.raw("SELECT * FROM restaurant_restaurant WHERE name ='" + request.GET['searchbar'] + "'")
 
     # print(len(restaurants))
+    # restaurants = Restaurant.objects.filter(name__icontains=query)
     return render(request,'restaurant/search.html',{'search_results':restaurants})
 
 

@@ -57,23 +57,28 @@
         </div>
 
         <div id="navbar"class="navbar-right" >
-          <form class="navbar-form navbar-right">
-            <a  class="btn btn-primary" href="{% url 'signup' %}">Sign Up</a>
-            <a  class="btn btn-primary" href="{% url 'login' %}">Login</a>
-          </form>
+          {% if request.session.user_login_name != None %}
+                    <p style="color: white">Welcome, {{request.session.user_login_name}}!</p>
+        {% endif %}
         </div><!--/.navbar-collapse -->
       </div>
     </nav>
     <div>
     	You are in search
-        
-		{% for restaurant in search_results.all %}
+        {{search_results}}
 
-		<h1>{{restaurant.name}}</h1>
+<!-- 		{% for restaurant in search_results %}
+        {% for att in restaurant %}{% if forloop.counter == 2 %}
+		<h1>{{att}}{% if forloop.counter == 1 %}{% endif %}</h1>
+        {% endif %}
+        {% endfor %}
+		{% endfor %} -->
 
-		{% endfor %}
+        {% for restaurant in search_results %}
 
-		<h1>{{search_results}}</h1>
+        <h1>{{restaurant}}</h1>
+
+        {% endfor %}
     </div>
 
 

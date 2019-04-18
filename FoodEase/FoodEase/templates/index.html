@@ -113,7 +113,7 @@
 					  <label class="form-check-label" for="inlineCheckbox2">Cafe</label>
 					</div>
   				</div>
-  				<div class="row">
+<!--   				<div class="row">
   					<div  class="col-md-4" style="padding-right: 0; width: 200px">
   						<label for="amount">Distance:</label>
   					</div>
@@ -127,7 +127,7 @@
 					  <input class="form-check-input" type="radio" id="dis5" value="option3" name="distance">
 					  <label class="form-check-label" for="inlineCheckbox2">Within 5km</label>
 					</div>
-  				</div>
+  				</div> -->
   				<div class="row">
   					<div  class="col-md-4" style="padding-right: 0; width: 200px">
   						<label for="amount">Total likes:</label>
@@ -331,7 +331,7 @@
         		// console.log(ids[i])
         		continue;
         	}
-        	// console.log(calculateDistance(locs_lats[i], locs_lngs[i], pos['lat'], pos['lng']))
+        	var distance = calculateDistance(locs_lats[i], locs_lngs[i], pos['lat'], pos['lng'])
         	// console.log(i)
         	// console.log(locs_lats[i])
         	// console.log(locs_lngs[i])
@@ -357,14 +357,15 @@
             }
           })(marker, i));
           marker.addListener('click', changeColor);
-          show_detail(marker, i);
+          show_detail(marker, i, distance);
           markersArray.push(marker);        
         }
       }
 
-      function show_detail(marker, i) {
+      function show_detail(marker, i, distance) {
+        distance = distance.toFixed(2)
       	var contentString = 
-            '<h4 class="firstHeading">'+ names[i] +'</h4>';
+            '<h4 class="firstHeading">'+ names[i] +'</h4>' + '<p>Distance:' + distance +'km</p>';
       	var infowindow = new google.maps.InfoWindow({
           content: contentString
         });
