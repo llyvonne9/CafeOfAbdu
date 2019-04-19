@@ -27,4 +27,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('restaurant/', include('restaurant.urls')),
     path('search/', views.search,name='search'),
+    path('recommend/', views.recommend,name='recommend'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

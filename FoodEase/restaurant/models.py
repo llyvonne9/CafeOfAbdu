@@ -8,7 +8,7 @@ class Restaurant(models.Model):
 	location = models.TextField()
 	url = models.TextField()
 	phone = models.CharField(max_length=50)
-	likes = models.IntegerField(default=1)
+	num_likes = models.IntegerField(default=1)
 	lat = models.FloatField(default=0.0)
 	lng = models.FloatField(default=0.0)
 	photo = models.ImageField(upload_to='imgs', default="imgs/default.jpg")

@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'likes.apps.LikesConfig',
+    'visits.apps.VisitsConfig',
     'dish.apps.DishConfig',
     'restaurant.apps.RestaurantConfig',
     'serves.apps.ServesConfig',

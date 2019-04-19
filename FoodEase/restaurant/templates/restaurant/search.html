@@ -64,24 +64,29 @@
       </div>
     </nav>
     <div>
+        <div class="container">
+            
+            {% if num == 0 %}
+            <p>There are no results regarding this search</p>
+            {% endif %}
+
+            {% for id in ids %}
+            {% if forloop.counter == 1 %}<p>We found following information regarding your search</p>{% endif %}
+            
+            {% for i in id %}
+            
+            <a href="{% url 'detail' i.id %}"><h1>{{i.name}}</h1></a>
+
+            {% endfor %}
+
+            {% endfor %}
+
+            {% for dish in dishes %}
+                <a href="{% url 'detail' dish.id %}"><h1>{{dish.name}}</h1></a>
+            {% endfor%}
+        </div>
         
-        
-    	You are in search
-        
-        {% for id in ids %}
-
-        {% for i in id %}
-
-        
-        <a href="{% url 'detail' i.id %}"><h1>{{i.name}}</h1></a>
-
-        {% endfor %}
-
-        {% endfor %}
-
-        {% for dish in dishes %}
-            <a href="{% url 'detail' dish.id %}"><h1>{{dish.name}}</h1></a>
-        {% endfor%}
+    	
         
 
     </div>
