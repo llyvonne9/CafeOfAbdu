@@ -6,6 +6,7 @@ from serves import models as serves_models
 from likes import models as likes_models
 from visits import models as visits_models
 from django.db.models import Max
+import numpy as np
 
 # Create your views here.
 def home(request):
@@ -148,10 +149,13 @@ def recommend(request):
     # ret = []
     ret = []
     key_1 = max(recommend_dict, key=recommend_dict.get)
+    val_1 = recommend_dict[key_1]
     del(recommend_dict[key_1])
+    if (val_1 == 0):
+        key_1 = "empty"
     key_2 = max(recommend_dict, key=recommend_dict.get)
-
- 
+    if (recommend_dict[key_2] == 0):
+        key_2 = "empty"
 
     container = Restaurant.objects.none()
     if key_1 == "is_veg":
@@ -185,7 +189,56 @@ def recommend(request):
     # most_visited = user_visited.aggregate(Max('count'))
     # most_liked_rest = Restaurant.objects.get(pk=most_liked)
     # most_visited_rest = Restaurant.objects.get(pk=most_visited)
-
     # restaurants = restaurants | most_liked_rest
+
+    #create user vector [veg, dessert, nl, fd, cafe]
+    recommend_dict_2 = {"is_veg" : 0, "is_dessert" : 0, "is_nightlife" : 0, "is_finedining" : 0, "is_cafe" : 0}
+    for i in rests:
+        if i.is_veg == True:
+            recommend_dict_2["is_veg"] += 1
+        if i.is_dessert == True:
+            recommend_dict_2["is_dessert"] += 1
+        if i.is_nightlife == True:
+            recommend_dict_2["is_nightlife"] += 1
+        if i.is_finedining == True:
+            recommend_dict_2["is_finedining"] += 1
+        if i.is_cafe == True:
+            recommend_dict_2["is_cafe"] += 1
+
+    user_vector = [0,0,0,0,0]
+    user_vector[0] = recommend_dict_2["is_veg"]
+    user_vector[1] = recommend_dict_2["is_dessert"]
+    user_vector[2] = recommend_dict_2["is_nightlife"]
+    user_vector[3] = recommend_dict_2["is_finedining"]
+    user_vector[4] = recommend_dict_2["is_cafe"]
+    if (user_vector == [0,0,0,0,0]):
+        return render(request,'restaurant/recommend.html',{'restaurants':restaurants})
+    user_vector = user_vector/(np.linalg.norm(user_vector))
+    #iterate through all restaurants to create vector for each restaurant
+    all_restaurants = Restaurant.objects.all()
+    rest_dict = {}
+    for r in all_restaurants:
+        rest_dict[r] = 0
+    for key in rest_dict.keys():
+        r_vector = [key.is_veg,key.is_dessert,key.is_nightlife,key.is_finedining,key.is_cafe]
+        rest_dict[key] = (np.dot(r_vector,user_vector))/(np.linalg.norm(user_vector)*np.linalg.norm(r_vector))
+
+    key_3 = min(rest_dict, key=rest_dict.get)
+    del(rest_dict[key_3])
+    key_4 = min(rest_dict, key=rest_dict.get)
+
+    query3 = Restaurant.objects.filter(pk=key_3.id)
+    query4 = Restaurant.objects.filter(pk=key_4.id)
+
+    restaurants = restaurants | query3 | query4
+
+    if (restaurants.count() > 5):
+        restaurants = restaurants.order_by('-num_likes')
+        rest_list = (list(restaurants))[:5]
+        rest_list_id = []
+        for r in rest_list:
+            rest_list_id.append(r.id)
+        restaurants = Restaurant.objects.filter(pk__in = rest_list_id)
+
 
     return render(request,'restaurant/recommend.html',{'restaurants':restaurants})
