@@ -21,12 +21,14 @@ def signup(request):
 
 def login(request):
     if (request.method == 'POST'):
-        user = auth.authenticate(username=request.POST['username'],password=request.POST['password'])
+        name = request.POST['username']
+        user = auth.authenticate(username=name,password=request.POST['password'])
         if user is not None:
             auth.login(request, user)
+            request.session['user_login_name'] = name
             return redirect('home')
         else:
-            return render(request, 'accounts/login.html', {'error':'Username or Password is incorrect!'})
+            return render(request, 'accounts/login.html', {'error':'Username or Password is incorrect!' })
     else:
         return render(request, 'accounts/login.html')
 
@@ -34,4 +36,7 @@ def logout(request):
     if (request.method == 'POST'):
         auth.logout(request)
         return redirect('home')
-    return render(request, 'accounts/signup.html')
+    # return render(request, 'accounts/signup.html')
+    del request.session['user_login_name']
+    return redirect('home')
+

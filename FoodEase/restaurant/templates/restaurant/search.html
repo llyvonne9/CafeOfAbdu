@@ -1,11 +1,103 @@
-{% extends 'base.html' %}
 
-{% block content %}
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000" />
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
 
-{% for restaurant in restaurants.all %}
+    <link rel="icon" href="Favicon.png">
 
-<a href="{% url 'detail' restaurant.id %}"><h2>{{restaurant.name}}</h2></a>
+    <!-- Bootstrap CSS -->
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+        
+.my-form
+{
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
 
-{% endfor %}
+.my-form .row
+{
+    margin-left: 0;
+    margin-right: 0;
+}
 
-{% endblock %}
+.login-form
+{
+
+}
+
+.login-form .row
+{
+    margin-left: 0;
+    margin-right: 0;
+}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand  navbar-left" href="{% url 'home' %}">Foodease</a>
+        </div>
+
+        <div id="navbar"class="navbar-right" >
+          {% if request.session.user_login_name != None %}
+                    <p style="color: white">Welcome, {{request.session.user_login_name}}!</p>
+        {% endif %}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+    <div>
+        <div class="container">
+            
+            {% if num == 0 %}
+            <p>There are no results regarding this search</p>
+            {% endif %}
+
+            {% for id in ids %}
+            {% if forloop.counter == 1 %}<p>We found following information regarding your search</p>{% endif %}
+            
+            {% for i in id %}
+            
+            <a href="{% url 'detail' i.id %}"><h1>{{i.name}}</h1></a>
+
+            {% endfor %}
+
+            {% endfor %}
+
+            {% for dish in dishes %}
+                <a href="{% url 'detail' dish.id %}"><h1>{{dish.name}}</h1></a>
+            {% endfor%}
+        </div>
+        
+    	
+        
+
+    </div>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

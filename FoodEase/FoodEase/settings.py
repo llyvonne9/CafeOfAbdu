@@ -31,12 +31,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'likes.apps.LikesConfig',
+    'visits.apps.VisitsConfig',
     'dish.apps.DishConfig',
     'restaurant.apps.RestaurantConfig',
     'serves.apps.ServesConfig',
     'accounts.apps.AccountsConfig',
-    'likes.apps.LikesConfig',
-    'visits.apps.VisitsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -84,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'foodeasedb',
         'USER': 'postgres',
-        'PASSWORD': 'vyomtej123',
+        'PASSWORD': 'wsll361WHXF',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -126,10 +127,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
+# put htmls
 STATICFILES_DIRS = [
    os.path.join(BASE_DIR,'FoodEase/static/')
 ]
-
+#js, css
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'FoodEase/static')
+MEDIA_URL = MEDIA_ROOT + '/'
