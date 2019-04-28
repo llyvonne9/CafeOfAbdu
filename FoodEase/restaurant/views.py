@@ -169,7 +169,7 @@ def search(request):
     if isVeg:
         category_query += " AND r.is_veg "
     if isDessert:
-        category_query +=  " AND r.is_dessert"
+        category_query +=  " AND r.is_dessert "
     if isFine:
         category_query +=  " AND r.is_finedining "
     if isNight:
@@ -184,10 +184,11 @@ def search(request):
         c.execute(
             "SELECT r.name FROM restaurant_restaurant AS r \
             LEFT JOIN serves_serves AS s ON r.id = s.restaurant_id_id \
-            WHERE (LOWER(r.name) LIKE LOWER(%s) OR r.cuisine LIKE %s OR r.location LIKE %s OR LOWER(s.dname) LIKE %s )"
+            WHERE (LOWER(r.name) LIKE LOWER(%s) OR r.cuisine LIKE %s OR r.location LIKE %s OR LOWER(s.dname) LIKE LOWER(%s) )"
             + category_query +
             "GROUP BY r.name HAVING MIN(s.price) >= " + min + " AND MAX(s.price) <= "+ max +"AND SUM(s.likes) >= " + str(likes)
             , ['%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%','%'+request.GET['searchbar']+'%'])
+
         restaurants = c.fetchall()
         # restaurants.filter()
         print("restaurant", restaurants)
