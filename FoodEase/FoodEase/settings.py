@@ -85,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'foodeasedb',
         'USER': 'postgres',
-        'PASSWORD': 'wsll361WHXF',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5432',
     }
